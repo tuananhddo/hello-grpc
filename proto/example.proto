@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = ".;hello";
+import "google/protobuf/timestamp.proto";
+
+package hello;
+
+message PointX {
+  int32 latitude = 1;
+  int32 longitude = 2;
+}
+
+service Hello {
+  rpc GetFeature(PointX) returns (PointX) {}
+}
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+  google.protobuf.Timestamp created_at = 2;
+}

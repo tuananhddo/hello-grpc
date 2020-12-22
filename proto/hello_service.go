@@ -15,3 +15,14 @@ func (h HelloServerX) GetFeature(ctx context.Context, point *Point) (*Point, err
 	fmt.Printf("Lat %d", point.Longitude)
 	return point, nil
 }
+func (s *HelloServerX) SayHello(ctx context.Context, req *HelloRequest) (*HelloReply, error) {
+	return &HelloReply{
+		Message: "Hello",
+	}, nil
+}
+
+func (s *HelloServerX) CreateToDo(ctx context.Context, req *CreateToDoRequest) (*CreateToDoResponse, error) {
+	return &CreateToDoResponse{
+		Message: "Create Success",
+	}, nil
+}

@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 option go_package = ".;hello";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 package hello;
 
@@ -11,4 +13,35 @@ message Point {
 
 service Hello {
   rpc GetFeature(Point) returns (Point) {}
+
+  rpc SayHello (HelloRequest) returns (HelloReply) {
+    option (google.api.http) = {
+      get: "/say-hello/{name}"
+    };
+  }
+  rpc CreateToDo (CreateToDoRequest) returns (CreateToDoResponse) {
+    option (google.api.http) = {
+      post: "/todos"
+      body: "*"
+    };
+  }
+}
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+  google.protobuf.Timestamp created_at = 2;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+message CreateToDoRequest {
+  string content = 1;
+  google.protobuf.Timestamp created_at = 2;
+}
+
+// The response message containing the greetings
+message CreateToDoResponse {
+  string message = 1;
 }

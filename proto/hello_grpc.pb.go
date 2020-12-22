@@ -18,6 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HelloClient interface {
 	GetFeature(ctx context.Context, in *Point, opts ...grpc.CallOption) (*Point, error)
+	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	CreateToDo(ctx context.Context, in *CreateToDoRequest, opts ...grpc.CallOption) (*CreateToDoResponse, error)
 }
 
 type helloClient struct {
@@ -37,11 +39,31 @@ func (c *helloClient) GetFeature(ctx context.Context, in *Point, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *helloClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
+	out := new(HelloReply)
+	err := c.cc.Invoke(ctx, "/hello.Hello/SayHello", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *helloClient) CreateToDo(ctx context.Context, in *CreateToDoRequest, opts ...grpc.CallOption) (*CreateToDoResponse, error) {
+	out := new(CreateToDoResponse)
+	err := c.cc.Invoke(ctx, "/hello.Hello/CreateToDo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HelloServer is the server API for Hello service.
 // All implementations must embed UnimplementedHelloServer
 // for forward compatibility
 type HelloServer interface {
 	GetFeature(context.Context, *Point) (*Point, error)
+	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+	CreateToDo(context.Context, *CreateToDoRequest) (*CreateToDoResponse, error)
 	mustEmbedUnimplementedHelloServer()
 }
 
@@ -51,6 +73,12 @@ type UnimplementedHelloServer struct {
 
 func (UnimplementedHelloServer) GetFeature(context.Context, *Point) (*Point, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFeature not implemented")
+}
+func (UnimplementedHelloServer) SayHello(context.Context, *HelloRequest) (*HelloReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+}
+func (UnimplementedHelloServer) CreateToDo(context.Context, *CreateToDoRequest) (*CreateToDoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateToDo not implemented")
 }
 func (UnimplementedHelloServer) mustEmbedUnimplementedHelloServer() {}
 
@@ -83,6 +111,42 @@ func _Hello_GetFeature_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Hello_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HelloRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelloServer).SayHello(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hello.Hello/SayHello",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelloServer).SayHello(ctx, req.(*HelloRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Hello_CreateToDo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateToDoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelloServer).CreateToDo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hello.Hello/CreateToDo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelloServer).CreateToDo(ctx, req.(*CreateToDoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Hello_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "hello.Hello",
 	HandlerType: (*HelloServer)(nil),
@@ -91,7 +155,15 @@ var _Hello_serviceDesc = grpc.ServiceDesc{
 			MethodName: "GetFeature",
 			Handler:    _Hello_GetFeature_Handler,
 		},
+		{
+			MethodName: "SayHello",
+			Handler:    _Hello_SayHello_Handler,
+		},
+		{
+			MethodName: "CreateToDo",
+			Handler:    _Hello_CreateToDo_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/hello.proto",
+	Metadata: "hello.proto",
 }
