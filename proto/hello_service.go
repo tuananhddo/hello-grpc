@@ -3,6 +3,7 @@ package hello
 import (
 	"context"
 	"fmt"
+	"hello-gr/repo"
 )
 
 type HelloServerX struct {
@@ -22,6 +23,8 @@ func (s *HelloServerX) SayHello(ctx context.Context, req *HelloRequest) (*HelloR
 }
 
 func (s *HelloServerX) CreateToDo(ctx context.Context, req *CreateToDoRequest) (*CreateToDoResponse, error) {
+	fmt.Print(req.Content)
+	repo.CreateToDoRepo()
 	return &CreateToDoResponse{
 		Message: "Create Success",
 	}, nil

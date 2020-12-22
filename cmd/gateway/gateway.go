@@ -15,7 +15,7 @@ func main() {
 
 	ctx := context.Background()
 	err := hello.RegisterHelloHandlerFromEndpoint(ctx, mux, ":7100", opts)
-	err = hello.RegisterHelloHandlerFromEndpoint(ctx, mux, ":7100", opts)
+	//err = hello.RegisterHelloHandlerFromEndpoint(ctx, mux, ":7100", opts)
 
 	if err != nil {
 		panic(err)
