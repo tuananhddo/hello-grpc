@@ -21,5 +21,6 @@ func main() {
 	)
 	//hello.RegisterHelloServer(gr)
 	hello.RegisterHelloServer(grpcServer, &s)
+	//hello.RegisterHelloServer(grpcServer, &s)
 	grpcServer.Serve(lis)
 }

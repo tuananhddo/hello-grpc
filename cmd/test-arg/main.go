@@ -1,21 +1,37 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
 func main() {
-
-	var a = 5
-	var p = &a // copy by reference
-	var q = &p
-
-	fmt.Println("a =  ", a)   // a =  5
-	fmt.Println("&a = ", &a)   // a =  5
-	fmt.Println("p =  ", p)   // p =  0x10414020
-	fmt.Println("*p = ", *p) // *p =  5
-	fmt.Println("&p = ", &p) // &p =  0x1040c128
-	fmt.Println("q =  ", q)   // x =  5
-	fmt.Println("q =  ", **q)   // x =  5
-
+	counts := make(map[string]int)
+	files := os.Args[1:]
+	if len(files) == 0 {
+		countLines(os.Stdin, counts)
+	} else {
+		for _, arg := range files {
+			f, err := os.Open(arg)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "dup2: %v\n", err)
+				continue
+			}
+			countLines(f, counts)
+			f.Close()
+		}
+	}
+	for line, n := range counts {
+		if n > 1 {
+			fmt.Printf("%d\t%s\n", n, line)
+		}
+	}
+}
+func countLines(f *os.File, counts map[string]int) {
+	input := bufio.NewScanner(f)
+	for input.Scan() {
+		counts[input.Text()]++
+	}
+	// NOTE: ignoring potential errors from input.Err()
 }
