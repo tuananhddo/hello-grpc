@@ -34,3 +34,6 @@ fi
   file A -nt file B         checks if file A is newer than file B
   file A -ot file B          checks if file A is older than file B
 COMMENT
+<<COMMENT
+  boolean &&  |  ||
+COMMENT
